@@ -5,20 +5,21 @@ use xilem::{EventLoop, WidgetView, WindowOptions, Xilem};
 
 use anyhow::Error;
 use portable_pty::{CommandBuilder, PtySize, PtySystem, native_pty_system};
+use std::sync::mpsc::Receiver;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex};
 use strip_ansi::strip_ansi;
 
-#[derive(Default)]
 struct Pinpontty {
-    data: Arc<Mutex<String>>,
+    rx: Receiver<String>,
+    last_output: String,
 }
 
 fn app_logic(data: &mut Pinpontty) -> impl WidgetView<Pinpontty> + use<> {
-    flex(
-        Axis::Vertical,
-        (label(format!("{}", data.data.lock().unwrap())),),
-    )
+    while let Ok(output) = data.rx.try_recv() {
+        data.last_output = output;
+    }
+    flex(Axis::Vertical, (label(format!("{}", data.last_output)),))
 }
 
 fn main() -> Result<(), EventLoopError> {
@@ -37,10 +38,8 @@ fn main() -> Result<(), EventLoopError> {
             pixel_height: 0,
         })
         .unwrap();
-    let cmd = CommandBuilder::new("powershell");
+    let cmd = CommandBuilder::new("nu");
     let child = pair.slave.spawn_command(cmd).unwrap();
-
-    let mutex = Arc::new(Mutex::new(String::new()));
     let mut reader = pair.master.try_clone_reader().unwrap();
     let writer = pair.master.take_writer().unwrap();
 
@@ -65,7 +64,10 @@ fn main() -> Result<(), EventLoopError> {
     });
 
     let app = Xilem::new_simple(
-        Pinpontty::default(),
+        Pinpontty {
+            rx: rx,
+            last_output: String::new(),
+        },
         app_logic,
         WindowOptions::new("Pinpontty"),
     );
