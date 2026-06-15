@@ -9,13 +9,16 @@ pub struct App {
 impl AppMain for App {
     fn script_mod(vm: &mut ScriptVm) -> ScriptValue {
         script_mod! {
-            pub app := Window {
+            use mod.prelude.widgets.*
+            use mod.widgets.*
+
+            pub app = Window {
                 caption: "Pinpontty Terminal",
                 window_size: vec2(1024.0, 768.0),
 
                 body := View {
-                    width: fill,
-                    height: fill,
+                    width: Fill,
+                    height: Fill,
                     background: #000000
                 }
             }
