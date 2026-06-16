@@ -4,5 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-#makepad-widgets = "0.9.0"
-makepad-widgets = { git = "https://github.com/makepad/makepad", rev = "bc13b89" }
+makepad-widgets = { git = "https://github.com/makepad/makepad", rev = "d37a34f24e7d1435fc21a185429a235512bdb03c" }

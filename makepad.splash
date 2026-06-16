@@ -1,0 +1,51 @@
+// ==========================================
+// 1. INICJALIZACJA I KONFIGURACJA WIDOKU
+// ==========================================
+// Tworzenie lub pobieranie głównego kontenera aplikacji
+const root = ui.root_view();
+
+// Czyszczenie widoku (przydatne przy przeładowywaniu skryptu na żywo)
+root.clear_children();
+
+// Setup podstawowego układu (Layout)
+root.set_layout({
+    direction: "Vertical",
+    align: {x: 0.5, y: 0.5}, // Środkowanie elementów w pionie i poziomie
+    padding: 20,
+    spacing: 15
+});
+
+// ==========================================
+// 2. TWORZENIE ELEMENTÓW INTERFEJSU (UI)
+// ==========================================
+// Dodanie etykiety tekstowej
+const title = root.append_child("Label", {
+    text: "Witaj w Makepad Splash!",
+    font_size: 24,
+    color: "#ffffff"
+});
+
+// Dodanie przycisku interaktywnego
+const actionButton = root.append_child("Button", {
+    text: "Kliknij mnie",
+    width: 120,
+    height: 40
+});
+
+// ==========================================
+// 3. OBSŁUGA ZDARZEŃ (REAKTYWNOŚĆ)
+// ==========================================
+actionButton.on_click(() => {
+    title.set_text("Przycisk został aktywowany!");
+    title.set_color("#00ff00"); // Zmiana koloru tekstu na zielony
+});
+
+// ==========================================
+// 4. OPERACJE ASYNCHRONICZNE (Opcjonalne)
+// ==========================================
+// Przykład użycia wbudowanego licznika czasu (Timer API)
+/*
+timer.timeout(2000, () => {
+    // Kod wykona się po 2 sekundach
+});
+*/
